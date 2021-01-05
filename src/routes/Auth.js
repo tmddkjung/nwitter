@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { authService } from "fbase";
+import {authService, fbInstance} from "fbase";
 
 const Auth = () => {
     const [email, setEmail] = useState("");
@@ -33,6 +33,21 @@ const Auth = () => {
         }
     }
 
+    const onSignInSocials = async (event) => {
+        const { target: {name}} = event;
+        let provider;
+
+        if(name === "google"){
+            provider = new fbInstance.auth.GoogleAuthProvider();
+        }
+        else if(name === "github"){
+            provider = new fbInstance.auth.GithubAuthProvider();
+        }
+
+        await authService.signInWithPopup(provider)
+
+    }
+
     return <div>
         <form onSubmit={onSubmit}>
             <input type={"email"} name={"email"} value={email} placeholder={"Enter Email"} required={true} onChange={onChange}/>
@@ -48,8 +63,8 @@ const Auth = () => {
             }
         </span>
         <div>
-            <button>Countinue with Google</button>
-            <button>Countinue with Github</button>
+            <button name={"google"} onClick={onSignInSocials}>Countinue with Google</button>
+            <button name={"github"} onClick={onSignInSocials}>Countinue with Github</button>
         </div>
     </div>
 }
