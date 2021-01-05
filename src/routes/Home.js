@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { dbService } from "fbase";
+import NweetCard from "../components/NweetCard";
 
 const Home = ({userObj}) => {
     const [nweet, setNweet] = useState("")
@@ -60,10 +61,7 @@ const Home = ({userObj}) => {
             <div>
                 {
                     nweets.map((comment)=>{
-                        return <div key={comment.id}>
-                            <h4>{comment.text}</h4>
-                            <span>{comment.createdAt}</span>
-                        </div>
+                        return <NweetCard key={comment.id} isOwner={userObj.uid === comment.creatorId } nweet={comment}/>
                     })
                 }
             </div>
