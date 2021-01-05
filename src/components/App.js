@@ -27,7 +27,7 @@ function App() {
                     ? <AppRouter isLoggedIn={isLoggedIn} userObj={userObj}/>
                     : "Initializing..."
             }
-            <footer>&copy; Nwitter</footer>
+            <footer>&copy; Nwitter By Seung</footer>
         </>
     );
 }

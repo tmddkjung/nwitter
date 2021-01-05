@@ -1,24 +1,24 @@
 import React, {useState, useEffect} from "react";
-import { dbService } from "fbase";
+import {dbService, storageService} from "fbase";
 
 const NweetCard = ({isOwner, nweet}) => {
     const [editable, setEdit] = useState(false)
     const [newNweet, setNweet] = useState(nweet.text)
 
-    const onUpdate = (event) =>{
+    const onUpdate = async (event) =>{
         event.preventDefault();
         if(!window.confirm("Do you want to update this nweet?")) return;
 
-        dbService.doc(`nweets/${nweet.id}`).update({ text: newNweet })
-            .then(function() {
-                alert("Success updated")
-                setEdit(false)
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                alert(error.message)
-                console.error("Error updating document: ", error);
-            });
+        await dbService.doc(`nweets/${nweet.id}`).update({ text: newNweet })
+            // .then(function() {
+            //     alert("Success updated")
+            //     setEdit(false)
+            // })
+            // .catch(function(error) {
+            //     // The document probably doesn't exist.
+            //     alert(error.message)
+            //     console.error("Error updating document: ", error);
+            // });
 
 
     }
@@ -28,21 +28,23 @@ const NweetCard = ({isOwner, nweet}) => {
         setNweet(value)
     }
 
-    const deleteNweet = () => {
+    const deleteNweet = async () => {
         if(!window.confirm("Do you want to delete this nweet?")) return;
-        dbService.doc(`nweets/${nweet.id}`).delete()
-            .then(()=>{
-                alert("Success removed")
-            })
-            .catch(function(error) {
-                alert(error.message)
-                console.error("Error removing document: ", error);
-            });;
+
+        await storageService.refFromURL(nweet.attachmentUrl).delete()
+        await dbService.doc(`nweets/${nweet.id}`).delete()
+            // .then(()=>{
+            //     alert("Success removed")
+            // })
+            // .catch(function(error) {
+            //     alert(error.message)
+            //     console.error("Error removing document: ", error);
+            // });
+
     }
 
     const changeEditMode = () => {
         if(editable && nweet.text !== newNweet) setNweet(nweet.text)
-
         setEdit(prev => !prev)
     }
 
@@ -57,6 +59,10 @@ const NweetCard = ({isOwner, nweet}) => {
             }
 
             <h4>
+                {
+                    nweet.attachmentUrl &&
+                    <img src={nweet.attachmentUrl} width={"50px"} height={"50px"}/>
+                }
                 {
                     editable
                     ?
