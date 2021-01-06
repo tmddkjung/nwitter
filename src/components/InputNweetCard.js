@@ -21,6 +21,7 @@ const InputNweetCard = ({userObj}) => {
             text: nweet,
             createdAt : Date.now(),
             creatorId : userObj.uid,
+            creatorName : userObj.displayName,
             attachmentUrl
         })
         setNweet("")
@@ -36,12 +37,10 @@ const InputNweetCard = ({userObj}) => {
         const { target : {files}} = event;
 
         if(files.length !== 0) {
-            console.log("theFile", files)
             const theFile = files[0];
 
             const reader = new FileReader();
             reader.onloadend = (finishedEvent) => {
-                console.log(finishedEvent)
                 const { currentTarget : { result }} = finishedEvent;
                 setAttachment(result);
             }
@@ -49,25 +48,44 @@ const InputNweetCard = ({userObj}) => {
         }
     }
 
-    const onFileClear = () => setAttachment("");
+    const onFileClear = () => {
+        let fileInput = document.getElementById("attachmentForm");
+        fileInput.value = ""
+        setAttachment("");
+    }
 
     return (
         <form onSubmit={onSubmit}>
-            <input type={"file"} accept={"image/*"} onChange={onAttachmentChange}/>
+            <div className={"input-group"}>
+                <input className={"form-control"} type={"text"}
+                       style={{
+                           borderRadius: "40px",
+                           border: "1px solid #007bff",
+                           backgroundColor: "#000",
+                           paddingRight: "48px"
+                       }}
+                       placeholder={"What's on your mind?"}
+                       maxLength={120}
+                       required={true}
+                       onChange={onChange}
+                />
+                <button type={"submit"} className={"btn btn-primary"}
+                        style={{borderRadius:"50px", marginLeft: "-42px",zIndex: "10"}}><i className={"bi-arrow-right-short"}></i></button>
+            </div>
+
+            <div className="mt-2">
+                <label htmlFor="attachmentForm" className="form-label" style={{color: "#0d6efd", cursor: "pointer"}}>
+                    Add Photo <i className={"bi-plus"}></i>
+                </label>
+            </div>
+            <input style={{display: "none"}} id="attachmentForm" type={"file"} accept={"image/*"} onChange={onAttachmentChange}/>
             {
                 attachment &&
-                <div>
+                <div className={"photo"}>
                     <img src={attachment} width={"50px"} height={"50px"}/>
-                    <button onClick={onFileClear}>Clear</button>
+                    <button className={"btn btn-sm"}  style={{ color:"#007bff"}} onClick={onFileClear}>clear<i className={"bi-x-circle-fill ml-2"}></i></button>
                 </div>
             }
-            <input type={"text"}
-                   placeholder={"What's on your mind?"}
-                   maxLength={120}
-                   required={true}
-                   onChange={onChange}
-            />
-            <input type={"submit"} value={"nweet"}/>
         </form>
     )
 }
