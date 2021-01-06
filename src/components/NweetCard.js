@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from "react";
 import {dbService, storageService} from "fbase";
 
+import moment from "moment";
+
 const NweetCard = ({isOwner, nweet}) => {
     const [editable, setEdit] = useState(false)
     const [newNweet, setNweet] = useState(nweet.text)
@@ -10,17 +12,6 @@ const NweetCard = ({isOwner, nweet}) => {
         if(!window.confirm("Do you want to update this nweet?")) return;
 
         await dbService.doc(`nweets/${nweet.id}`).update({ text: newNweet })
-            // .then(function() {
-            //     alert("Success updated")
-            //     setEdit(false)
-            // })
-            // .catch(function(error) {
-            //     // The document probably doesn't exist.
-            //     alert(error.message)
-            //     console.error("Error updating document: ", error);
-            // });
-
-
     }
 
     const onChange = (event) => {
@@ -31,16 +22,8 @@ const NweetCard = ({isOwner, nweet}) => {
     const deleteNweet = async () => {
         if(!window.confirm("Do you want to delete this nweet?")) return;
 
-        await storageService.refFromURL(nweet.attachmentUrl).delete()
+        if(nweet.attachmentUrl !== "") await storageService.refFromURL(nweet.attachmentUrl).delete()
         await dbService.doc(`nweets/${nweet.id}`).delete()
-            // .then(()=>{
-            //     alert("Success removed")
-            // })
-            // .catch(function(error) {
-            //     alert(error.message)
-            //     console.error("Error removing document: ", error);
-            // });
-
     }
 
     const changeEditMode = () => {
@@ -48,37 +31,46 @@ const NweetCard = ({isOwner, nweet}) => {
         setEdit(prev => !prev)
     }
 
+    const createdDate = moment(nweet.createdAt).format("YY년 MM월 DD일")
+
     return (
-        <div>
+        <div className={"nweetbox"} style={editable ? {height: "160px"}:{}}>
+            <span className={"namebox"}>
+                <span className={"name"}>{nweet.creatorName || ""}</span>
+                <span className={"date"}>{ createdDate }</span>
+            </span>
             {
-                isOwner &&
-                <span>
-                   <button onClick={deleteNweet}><i>삭제</i></button>
-                   <button onClick={changeEditMode}><i>{editable?"취소":"수정"}</i></button>
+                isOwner && !editable &&
+                <span className={"btnbox"}>
+                   <button className={"btn btn-sm"} onClick={deleteNweet}><i className={"bi-trash-fill"}></i></button>
+                   <button className={"btn btn-sm"} onClick={changeEditMode}><i className={"bi-pencil-fill"}></i></button>
                 </span>
             }
-
-            <h4>
-                {
-                    nweet.attachmentUrl &&
-                    <img src={nweet.attachmentUrl} width={"50px"} height={"50px"}/>
-                }
+            {
+                nweet.attachmentUrl &&
+                <div className={"photobox"} style={editable?{top:"120px"}:{}}>
+                    <img className={"photo"} src={nweet.attachmentUrl}/>
+                </div>
+            }
+            <div className={"textbox"}>
                 {
                     editable
                     ?
                         <form onSubmit={onUpdate}>
-                            <input type={"text"}
+                            <input className={"form-control"}
+                                   type={"text"}
                                  value={newNweet}
                                  placeholder={"Update your nweet"}
                                  maxLength={120}
                                  required={true}
                                  onChange={onChange}
                             />
-                            <input type={"submit"} value={"submit"}/>
+                            <button className={"btn btn-primary mt-2"} style={{width: "100%", height: "35px"}} type={"submit"}>Update Nweet</button>
+                            <button className={"btn btn-warning mt-1"} style={{width: "100%", height: "35px"}} onClick={changeEditMode}>Cancel</button>
                         </form>
                     : nweet.text
                 }
-            </h4>
+            </div>
         </div>
     )
 }

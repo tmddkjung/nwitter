@@ -25,27 +25,28 @@ const Home = ({userObj}) => {
 
     useEffect(()=>{
         // getNweets();
-        dbService.collection("nweets").onSnapshot(snapshot => {
-            let nweetArr = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }))
-
-            setNweets(nweetArr)
-        })
+        dbService.collection("nweets")
+            .orderBy("createdAt","desc")
+            .onSnapshot(snapshot => {
+                console.log("snapshot", snapshot)
+                let nweetArr = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
+                setNweets(nweetArr)
+            })
     }, []);
 
     return (
-        <div>
-            <div>
-                <InputNweetCard userObj={userObj}/>
-            </div>
-            <div>
-                {
-                    nweets.map((comment)=>{
-                        return <NweetCard key={comment.id} isOwner={userObj.uid === comment.creatorId } nweet={comment}/>
-                    })
-                }
+        <div id={"content-container"}>
+            <div id={"content-wrapper"}>
+                <div>
+                    <InputNweetCard userObj={userObj}/>
+                </div>
+                <div className={"nweetScroll"}>
+                    {
+                        nweets.map((comment)=>{
+                            return <NweetCard key={comment.id} isOwner={userObj.uid === comment.creatorId } nweet={comment}/>
+                        })
+                    }
+                </div>
             </div>
         </div>
     )

@@ -15,6 +15,7 @@ const Auth = () => {
     }
 
     const toggleAccount = () => setNewAccount((prev)=>!prev)
+
     const onSubmit = async (event) => {
         event.preventDefault();
         try{
@@ -48,23 +49,47 @@ const Auth = () => {
 
     }
 
-    return <div>
-        <form onSubmit={onSubmit}>
-            <input type={"email"} name={"email"} value={email} placeholder={"Enter Email"} required={true} onChange={onChange}/>
-            <input type={"password"} name={"password"} value={password} placeholder={"Enter Password"} required={true} onChange={onChange}/>
-            <input type={"submit"} value={newAccount ? "Create Account": "Sign In"}/>
-            <div>
-                <span style={{color:'red'}}>{error}</span>
+    return <div id={"auth-container"}>
+        <div id={"auth-wrapper"}>
+            <div className="mb-2">
+                <i className={"bi-twitter"} style={{fontSize:"2rem", color: "#0d6efd"}}></i>
             </div>
-        </form>
-        <span onClick={toggleAccount}>
-            {
-                newAccount ? "Sign In" : "Create New Account"
-            }
-        </span>
-        <div>
-            <button name={"google"} onClick={onSignInSocials}>Countinue with Google</button>
-            <button name={"github"} onClick={onSignInSocials}>Countinue with Github</button>
+            <form className={"auth-form"} onSubmit={onSubmit}>
+                <input className={"form-control mb-2"}
+                       style={{width: "350px", height:"35px", borderRadius:"40px", border: "0px"}}
+                       type={"email"} name={"email"} value={email}
+                       placeholder={"Email"} required={true}
+                       onChange={onChange}/>
+                <input className={"form-control"}
+                       style={{width: "350px", height:"35px", borderRadius:"40px", border: "0px"}}
+                       type={"password"} name={"password"} value={password}
+                       placeholder={"Password"} required={true}
+                       onChange={onChange}/>
+                <input className={"form-control mt-3 mb-1"}
+                       style={{
+                           width: "350px", height:"35px", borderRadius:"40px", border: "0px",
+                           backgroundColor: "#0d6efd",color: "#fff"
+                       }}
+                       type={"submit"} value={newAccount ? "Create Account": "Sign In"}/>
+                <div className={"error-msg"}><span>{error}</span></div>
+                <span className={"toggle-state"} onClick={toggleAccount}>
+                {
+                    newAccount ? "Sign In" : "Create Account"
+                }
+                </span>
+            </form>
+            <div style={{ marginTop: "60px" }}>
+                <button className={"btn btn-light mr-1"}
+                        style={{
+                            width: "180px", fontSize: "12px", color:"#000", borderRadius: "40px",
+                        }}
+                        name={"google"} onClick={onSignInSocials}>Countinue with Google<i className={"bi-google ml-1"}></i></button>
+                <button className={"btn btn-light ml-1"}
+                        style={{
+                            width: "180px", fontSize: "12px", color:"#000", borderRadius: "40px",
+                        }}
+                        name={"github"} onClick={onSignInSocials}>Countinue with Github<i className={"bi-github ml-1"}></i></button>
+            </div>
         </div>
     </div>
 }

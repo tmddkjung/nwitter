@@ -5,12 +5,13 @@ import Home from "routes/Home";
 import Profile from "routes/Profile";
 
 import Navigation from "components/Navigation";
+import EditProfile from "../routes/EditProfile";
 
 const AppRouter = ({ isLoggedIn , userObj})=> {
     return (
         <Router>
             {
-                isLoggedIn && <Navigation />
+                isLoggedIn && <Navigation userObj={userObj}/>
             }
             <Switch>
                 {
@@ -20,7 +21,10 @@ const AppRouter = ({ isLoggedIn , userObj})=> {
                                 <Home userObj={userObj}/>
                             </Route>
                             <Route exact path={"/profile"}>
-                                <Profile />
+                                <Profile userObj={userObj}/>
+                            </Route>
+                            <Route exact path={"/edit"}>
+                                <EditProfile userObj={userObj}/>
                             </Route>
                             {/*<Redirect from={"*"} to={"/"} />  type 1 is put the redirect on router.js */}
                         </> :
