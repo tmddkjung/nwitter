@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
-import firebase from "./firebase";
-//
-console.log(firebase)
+import App from 'components/App';
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'layout.css'
 
 ReactDOM.render(
   <React.StrictMode>
