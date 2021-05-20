@@ -36,6 +36,8 @@ const InputNweetCard = ({userObj}) => {
     const onAttachmentChange = (event) => {
         const { target : {files}} = event;
 
+        console.log("testS")
+
         if(files.length !== 0) {
             const theFile = files[0];
 
